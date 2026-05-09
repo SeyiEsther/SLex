@@ -33,16 +33,16 @@ interface StatCardProps {
   label: string
   value: string | number
   sub?: string
-  accent?: 'default' | 'red' | 'amber' | 'green' | 'indigo'
+  accent?: 'default' | 'red' | 'amber' | 'green' | 'royal'
   icon?: React.ReactNode
 }
 
 const accentText: Record<string, string> = {
-  default: 'text-gray-900',
-  red: 'text-red-600',
-  amber: 'text-amber-600',
-  green: 'text-green-600',
-  indigo: 'text-indigo-600',
+  default: '#162660',
+  red: '#dc2626',
+  amber: '#d97706',
+  green: '#16a34a',
+  royal: '#162660',
 }
 
 export function StatCard({ label, value, sub, accent = 'default', icon }: StatCardProps) {
@@ -51,9 +51,9 @@ export function StatCard({ label, value, sub, accent = 'default', icon }: StatCa
       <div className="px-6 py-5">
         <div className="flex items-start justify-between">
           <p className="text-sm font-medium text-gray-500">{label}</p>
-          {icon && <div className="text-gray-400">{icon}</div>}
+          {icon && <div style={{ color: '#162660', opacity: 0.4 }}>{icon}</div>}
         </div>
-        <p className={cn('mt-2 text-3xl font-bold', accentText[accent])}>{value}</p>
+        <p className="mt-2 text-3xl font-bold" style={{ color: accentText[accent] }}>{value}</p>
         {sub && <p className="mt-1 text-xs text-gray-400">{sub}</p>}
       </div>
     </Card>

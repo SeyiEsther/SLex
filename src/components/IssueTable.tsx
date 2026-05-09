@@ -29,16 +29,15 @@ const TYPE_OPTIONS: { value: IssueType | 'all'; label: string }[] = [
 
 function ConfidencePill({ confidence }: { confidence?: number | null }) {
   if (confidence === undefined || confidence === null) return <span className="text-gray-300">—</span>
-
   const pct = Math.round(confidence * 100)
-  const color =
-    pct >= 90 ? 'bg-green-100 text-green-700' :
-    pct >= 70 ? 'bg-amber-100 text-amber-700' :
-    'bg-red-100 text-red-700'
-
+  const style: React.CSSProperties =
+    pct >= 90 ? { backgroundColor: '#dcfce7', color: '#15803d' } :
+    pct >= 70 ? { backgroundColor: '#fef3c7', color: '#b45309' } :
+    pct === 0 ? { backgroundColor: '#fee2e2', color: '#b91c1c' } :
+    { backgroundColor: '#D0E6FD', color: '#162660' }
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${color}`}>
-      {pct}%
+    <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" style={style}>
+      {pct === 0 ? 'No match' : `${pct}%`}
     </span>
   )
 }
@@ -72,37 +71,27 @@ export default function IssueTable({ issues, providers, departments }: IssueTabl
   }, [issues, severityFilter, typeFilter, providerFilter, deptFilter, search])
 
   function downloadCSV() {
-    const headers = [
-      'Severity', 'Type', 'Affected Name', 'Email', 'NI Number',
-      'Provider', 'Department', 'Description', 'Financial Impact (£/mo)', 'Match Confidence',
-    ]
+    const headers = ['Severity', 'Type', 'Name', 'Email', 'NI Number', 'Provider', 'Department', 'Description', 'Cost/mo (£)', 'Confidence']
     const rows = filtered.map((i) => [
-      i.severity,
-      i.issue_type,
-      i.affected_name,
-      i.affected_email ?? '',
-      i.affected_ni_number ?? '',
-      i.provider ?? '',
-      i.department ?? '',
+      i.severity, i.issue_type, i.affected_name,
+      i.affected_email ?? '', i.affected_ni_number ?? '',
+      i.provider ?? '', i.department ?? '',
       `"${i.description.replace(/"/g, '""')}"`,
       i.financial_impact?.toFixed(2) ?? '',
       i.match_confidence !== undefined && i.match_confidence !== null
-        ? `${Math.round(i.match_confidence * 100)}%`
-        : '',
+        ? `${Math.round(i.match_confidence * 100)}%` : '',
     ])
     const csv = [headers, ...rows].map((r) => r.join(',')).join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
-    a.href = url
-    a.download = 'slex-reconciliation-issues.csv'
-    a.click()
+    a.href = url; a.download = 'slex-issues.csv'; a.click()
     URL.revokeObjectURL(url)
   }
 
   return (
     <div className="space-y-4">
-      {/* Filters row */}
+      {/* Filters */}
       <div className="flex flex-wrap items-center gap-2">
         <input
           type="search"
@@ -111,46 +100,29 @@ export default function IssueTable({ issues, providers, departments }: IssueTabl
           placeholder="Search name, email, NI…"
           className="input-base text-xs max-w-[200px]"
         />
-        <select
-          value={severityFilter}
-          onChange={(e) => setSeverityFilter(e.target.value as IssueSeverity | 'all')}
-          className="input-base w-auto text-xs"
-        >
+        <select value={severityFilter} onChange={(e) => setSeverityFilter(e.target.value as IssueSeverity | 'all')} className="input-base w-auto text-xs">
           {SEVERITY_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
-        <select
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value as IssueType | 'all')}
-          className="input-base w-auto text-xs"
-        >
+        <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value as IssueType | 'all')} className="input-base w-auto text-xs">
           {TYPE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
         {providers.length > 0 && (
-          <select
-            value={providerFilter}
-            onChange={(e) => setProviderFilter(e.target.value)}
-            className="input-base w-auto text-xs"
-          >
+          <select value={providerFilter} onChange={(e) => setProviderFilter(e.target.value)} className="input-base w-auto text-xs">
             <option value="all">All providers</option>
             {providers.map((p) => <option key={p} value={p}>{p}</option>)}
           </select>
         )}
         {departments.length > 0 && (
-          <select
-            value={deptFilter}
-            onChange={(e) => setDeptFilter(e.target.value)}
-            className="input-base w-auto text-xs"
-          >
+          <select value={deptFilter} onChange={(e) => setDeptFilter(e.target.value)} className="input-base w-auto text-xs">
             <option value="all">All departments</option>
             {departments.map((d) => <option key={d} value={d}>{d}</option>)}
           </select>
         )}
-
         <div className="ml-auto flex items-center gap-3">
-          <span className="text-xs text-gray-500">{filtered.length} of {issues.length} issues</span>
+          <span className="text-xs text-gray-400">{filtered.length} of {issues.length}</span>
           <button
             onClick={downloadCSV}
-            className="inline-flex items-center gap-1.5 text-xs border border-gray-300 text-gray-600 hover:bg-gray-50 px-3 py-1.5 rounded-lg transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs border border-gray-200 text-gray-600 hover:bg-gray-50 px-3 py-1.5 rounded-lg transition-colors"
           >
             <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -163,14 +135,17 @@ export default function IssueTable({ issues, providers, departments }: IssueTabl
       {/* Table */}
       {filtered.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 px-6 py-12 text-center">
-          <p className="text-sm text-gray-500">No issues match your filters.</p>
+          <p className="text-sm text-gray-400">No issues match your filters.</p>
         </div>
       ) : (
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs font-medium text-gray-500 bg-gray-50 border-b border-gray-200">
+                <tr
+                  className="text-left text-xs font-medium text-gray-500 border-b border-gray-200"
+                  style={{ backgroundColor: '#faf8f5' }}
+                >
                   <th className="px-4 py-3 whitespace-nowrap">Severity</th>
                   <th className="px-4 py-3 whitespace-nowrap">Type</th>
                   <th className="px-4 py-3">Employee</th>
@@ -200,7 +175,9 @@ export default function IssueTable({ issues, providers, departments }: IssueTabl
                           <IssueTypeBadge type={issue.issue_type} />
                         </td>
                         <td className="px-4 py-3">
-                          <p className="font-medium text-gray-900 whitespace-nowrap">{issue.affected_name}</p>
+                          <p className="font-medium whitespace-nowrap" style={{ color: '#162660' }}>
+                            {issue.affected_name}
+                          </p>
                           {issue.affected_email && (
                             <p className="text-xs text-gray-400 truncate max-w-[160px]">{issue.affected_email}</p>
                           )}
@@ -209,9 +186,7 @@ export default function IssueTable({ issues, providers, departments }: IssueTabl
                           )}
                         </td>
                         <td className="px-4 py-3 max-w-[280px]">
-                          <p className="text-gray-600 text-xs leading-relaxed line-clamp-2">
-                            {issue.description}
-                          </p>
+                          <p className="text-gray-600 text-xs leading-relaxed line-clamp-2">{issue.description}</p>
                         </td>
                         <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
                           {issue.provider ?? <span className="text-gray-300">—</span>}
@@ -237,28 +212,36 @@ export default function IssueTable({ issues, providers, departments }: IssueTabl
                         </td>
                       </tr>
                       {isExpanded && (
-                        <tr key={`${rowId}-detail`} className="bg-indigo-50/30">
-                          <td colSpan={9} className="px-4 py-4">
+                        <tr key={`${rowId}-detail`}>
+                          <td
+                            colSpan={9}
+                            className="px-4 py-4"
+                            style={{ backgroundColor: '#D0E6FD18' }}
+                          >
                             <p className="text-sm text-gray-700 leading-relaxed mb-3">{issue.description}</p>
                             <div className="flex flex-wrap gap-4 text-xs text-gray-500 mb-3">
                               {issue.match_confidence !== undefined && issue.match_confidence !== null && (
                                 <span>
-                                  <strong>Match confidence:</strong>{' '}
+                                  <strong style={{ color: '#162660' }}>Match confidence:</strong>{' '}
                                   {Math.round(issue.match_confidence * 100)}%
                                   {issue.match_confidence < 0.7 && (
                                     <span className="ml-1 text-amber-600">— manual verification recommended</span>
                                   )}
                                 </span>
                               )}
-                              {issue.provider && <span><strong>Provider:</strong> {issue.provider}</span>}
-                              {issue.department && <span><strong>Department:</strong> {issue.department}</span>}
+                              {issue.provider && (
+                                <span><strong style={{ color: '#162660' }}>Provider:</strong> {issue.provider}</span>
+                              )}
+                              {issue.department && (
+                                <span><strong style={{ color: '#162660' }}>Department:</strong> {issue.department}</span>
+                              )}
                             </div>
                             {issue.details && Object.keys(issue.details).length > 0 && (
                               <details className="text-xs">
                                 <summary className="text-gray-400 cursor-pointer hover:text-gray-600 select-none">
                                   Raw match data
                                 </summary>
-                                <pre className="mt-2 bg-white border border-gray-200 rounded p-3 text-gray-500 overflow-x-auto">
+                                <pre className="mt-2 bg-white border border-gray-100 rounded p-3 text-gray-500 overflow-x-auto">
                                   {JSON.stringify(issue.details, null, 2)}
                                 </pre>
                               </details>

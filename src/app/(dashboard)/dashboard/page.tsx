@@ -27,12 +27,15 @@ export default async function DashboardPage() {
       {/* Page header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <h1 className="text-2xl font-bold" style={{ color: '#162660' }}>Dashboard</h1>
           <p className="text-sm text-gray-500 mt-1">Payroll &amp; benefits reconciliation overview</p>
         </div>
         <Link
           href="/upload"
-          className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+          className="inline-flex items-center gap-2 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+          style={{ backgroundColor: '#162660' }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#0e1b4a' }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#162660' }}
         >
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -87,40 +90,50 @@ export default async function DashboardPage() {
         />
       </div>
 
-      {/* Upload shortcut */}
+      {/* Empty state */}
       {allRuns.length === 0 && (
-        <div className="bg-white rounded-xl border-2 border-dashed border-indigo-200 px-6 py-12 text-center mb-8">
-          <div className="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-indigo-500">
+        <div
+          className="rounded-xl border-2 border-dashed px-6 py-14 text-center mb-8 bg-white"
+          style={{ borderColor: '#D0E6FD' }}
+        >
+          <div
+            className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4"
+            style={{ backgroundColor: '#D0E6FD' }}
+          >
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: '#162660' }}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
           </div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-1">Start your first reconciliation</h3>
+          <h3 className="text-sm font-semibold mb-1" style={{ color: '#162660' }}>
+            Start your first reconciliation
+          </h3>
           <p className="text-sm text-gray-500 mb-5 max-w-sm mx-auto">
             Upload a payroll export and benefits invoice. SLex finds ghost employees, duplicate charges, and missing deductions automatically.
           </p>
           <Link
             href="/upload"
-            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
+            style={{ backgroundColor: '#162660' }}
           >
             Upload files and reconcile →
           </Link>
         </div>
       )}
 
-      {/* Reconciliation history */}
+      {/* History table */}
       {allRuns.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-gray-900">Reconciliation History</h2>
-            <Link href="/upload" className="text-sm text-indigo-600 hover:underline font-medium">
+            <h2 className="text-base font-semibold" style={{ color: '#162660' }}>Reconciliation History</h2>
+            <Link href="/upload" className="text-sm font-medium hover:underline" style={{ color: '#162660' }}>
               + New run
             </Link>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs font-medium text-gray-500 bg-gray-50 border-b border-gray-100">
+                <tr className="text-left text-xs font-medium text-gray-500 border-b border-gray-100"
+                    style={{ backgroundColor: '#faf8f5' }}>
                   <th className="px-5 py-3">Run name</th>
                   <th className="px-5 py-3">Date</th>
                   <th className="px-5 py-3">Payroll file</th>
@@ -134,21 +147,19 @@ export default async function DashboardPage() {
               <tbody className="divide-y divide-gray-50">
                 {allRuns.map((run) => (
                   <tr key={run.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-5 py-4 font-medium text-gray-900 max-w-[180px] truncate">
+                    <td className="px-5 py-4 font-medium max-w-[180px] truncate" style={{ color: '#162660' }}>
                       {run.name}
                     </td>
                     <td className="px-5 py-4 text-gray-500 whitespace-nowrap">
                       {formatDate(run.created_at)}
                     </td>
-                    <td className="px-5 py-4 text-gray-500 max-w-[130px] truncate text-xs font-mono">
-                      {run.payroll_filename ?? <span className="text-gray-300">—</span>}
+                    <td className="px-5 py-4 text-gray-400 max-w-[130px] truncate text-xs font-mono">
+                      {run.payroll_filename ?? '—'}
                     </td>
-                    <td className="px-5 py-4 text-gray-500 max-w-[130px] truncate text-xs font-mono">
-                      {run.benefits_filename ?? <span className="text-gray-300">—</span>}
+                    <td className="px-5 py-4 text-gray-400 max-w-[130px] truncate text-xs font-mono">
+                      {run.benefits_filename ?? '—'}
                     </td>
-                    <td className="px-5 py-4 text-center text-gray-700">
-                      {run.total_issues}
-                    </td>
+                    <td className="px-5 py-4 text-center text-gray-700">{run.total_issues}</td>
                     <td className="px-5 py-4 text-center">
                       {run.ghost_employees > 0 ? (
                         <span className="font-semibold text-red-600">{run.ghost_employees}</span>
@@ -168,9 +179,10 @@ export default async function DashboardPage() {
                     <td className="px-5 py-4">
                       <Link
                         href={`/results/${run.id}`}
-                        className="text-indigo-600 hover:underline text-sm font-medium whitespace-nowrap"
+                        className="text-sm font-medium hover:underline whitespace-nowrap"
+                        style={{ color: '#162660' }}
                       >
-                        View results →
+                        View →
                       </Link>
                     </td>
                   </tr>

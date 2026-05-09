@@ -33,9 +33,7 @@ export default function SignupPage() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
-      },
+      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
     })
 
     if (error) {
@@ -56,14 +54,11 @@ export default function SignupPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Check your email</h2>
+        <h2 className="text-xl font-bold mb-2" style={{ color: '#162660' }}>Check your email</h2>
         <p className="text-sm text-gray-500 mb-6">
-          We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
+          We sent a confirmation link to <strong>{email}</strong>.
         </p>
-        <Link
-          href="/login"
-          className="text-sm text-indigo-600 font-medium hover:underline"
-        >
+        <Link href="/login" className="text-sm font-medium hover:underline" style={{ color: '#162660' }}>
           Back to sign in
         </Link>
       </div>
@@ -72,7 +67,7 @@ export default function SignupPage() {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">Create your account</h1>
+      <h1 className="text-2xl font-bold mb-1" style={{ color: '#162660' }}>Create your account</h1>
       <p className="text-sm text-gray-500 mb-6">Start reconciling payroll in minutes</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -127,7 +122,7 @@ export default function SignupPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-medium py-2.5 px-4 rounded-lg transition-colors text-sm"
+          className="btn-primary w-full"
         >
           {loading ? 'Creating account…' : 'Create account'}
         </button>
@@ -135,7 +130,7 @@ export default function SignupPage() {
 
       <p className="mt-6 text-center text-sm text-gray-500">
         Already have an account?{' '}
-        <Link href="/login" className="text-indigo-600 font-medium hover:underline">
+        <Link href="/login" className="font-medium hover:underline" style={{ color: '#162660' }}>
           Sign in
         </Link>
       </p>

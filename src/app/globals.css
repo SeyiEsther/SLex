@@ -15,7 +15,9 @@
   }
 
   body {
-    @apply bg-gray-50 text-gray-900;
+    /* Warm Beige tint at 25% — feels premium, not clinical */
+    background-color: #faf8f5;
+    color: #111827;
   }
 }
 
@@ -23,11 +25,31 @@
   .input-base {
     @apply block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm
            placeholder:text-gray-400
-           focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500
+           focus:outline-none focus:ring-1
            disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500;
+    /* Royal Blue focus ring */
+    --tw-ring-color: #162660;
+    --tw-border-opacity: 1;
+  }
+
+  .input-base:focus {
+    border-color: #162660;
+    box-shadow: 0 0 0 1px #162660;
   }
 
   .label-base {
     @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+
+  /* Royal Blue primary button helper */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5
+           text-sm font-medium text-white transition-colors
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    background-color: #162660;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background-color: #0e1b4a;
   }
 }

@@ -32,8 +32,8 @@ export default function LoginPage() {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome back</h1>
-      <p className="text-sm text-gray-500 mb-6">Sign in to your SyncLedger account</p>
+      <h1 className="text-2xl font-bold mb-1" style={{ color: '#162660' }}>Welcome back</h1>
+      <p className="text-sm text-gray-500 mb-6">Sign in to your SLex account</p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -73,7 +73,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-medium py-2.5 px-4 rounded-lg transition-colors text-sm"
+          className="btn-primary w-full"
         >
           {loading ? 'Signing in…' : 'Sign in'}
         </button>
@@ -81,7 +81,7 @@ export default function LoginPage() {
 
       <p className="mt-6 text-center text-sm text-gray-500">
         Don&apos;t have an account?{' '}
-        <Link href="/signup" className="text-indigo-600 font-medium hover:underline">
+        <Link href="/signup" className="font-medium hover:underline" style={{ color: '#162660' }}>
           Create one
         </Link>
       </p>

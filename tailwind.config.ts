@@ -12,12 +12,21 @@ const config: Config = {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
-        brand: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
+        // Royal Blue #162660 — primary actions, navbar, headings
+        royal: {
+          DEFAULT: '#162660',
+          dark: '#0e1b4a',
+          light: '#1e318a',
+        },
+        // Powder Blue #D0E6FD — light accents, hover states, soft backgrounds
+        powder: {
+          DEFAULT: '#D0E6FD',
+          dark: '#b0d0f7',
+        },
+        // Warm Beige #F1E4D1 — page backgrounds, warm neutral
+        beige: {
+          DEFAULT: '#F1E4D1',
+          dark: '#e8d4bb',
         },
       },
     },
