@@ -15,6 +15,7 @@ export interface BenefitRecord {
   email?: string
   ni_number?: string
   payroll_id?: string
+  provider_member_id?: string
   provider?: string
   benefit_type?: string
   monthly_cost: number
@@ -43,6 +44,10 @@ export interface ReconciliationIssue {
   affected_ni_number?: string
   description: string
   financial_impact?: number
+  // 0–1 (1 = certain, 0 = no match found); null for structural issues like missing_data
+  match_confidence?: number
+  provider?: string
+  department?: string
   details: Record<string, unknown>
   status?: IssueStatus
   created_at?: string
@@ -58,11 +63,16 @@ export interface ReconciliationRun {
   total_issues: number
   critical_issues: number
   warning_issues: number
+  ghost_employees: number
   estimated_monthly_leakage: number
-  created_at: string
-  completed_at?: string
   payroll_row_count?: number
   benefits_row_count?: number
+  payroll_filename?: string
+  benefits_filename?: string
+  payroll_storage_path?: string
+  benefits_storage_path?: string
+  created_at: string
+  completed_at?: string
 }
 
 export interface UploadedFile {
@@ -71,8 +81,36 @@ export interface UploadedFile {
   run_id?: string
   file_type: 'payroll' | 'benefits'
   filename: string
+  storage_path?: string
   row_count: number
   created_at: string
+}
+
+export interface PayrollDbRecord {
+  id?: string
+  run_id: string
+  user_id: string
+  name: string
+  email?: string
+  ni_number?: string
+  payroll_id?: string
+  department?: string
+  gross_pay?: number
+  benefit_deduction?: number
+}
+
+export interface ProviderDbRecord {
+  id?: string
+  run_id: string
+  user_id: string
+  name: string
+  email?: string
+  ni_number?: string
+  payroll_id?: string
+  provider_member_id?: string
+  provider?: string
+  benefit_type?: string
+  monthly_cost: number
 }
 
 // ─── API Types ────────────────────────────────────────────────────────────────
@@ -81,12 +119,17 @@ export interface ReconcileRequest {
   name: string
   payroll: PayrollRecord[]
   benefits: BenefitRecord[]
+  payrollFilename?: string
+  benefitsFilename?: string
+  payrollStoragePath?: string
+  benefitsStoragePath?: string
 }
 
 export interface ReconcileResponse {
   runId: string
   totalIssues: number
   criticalIssues: number
+  ghostEmployees: number
   estimatedMonthlyLeakage: number
 }
 
